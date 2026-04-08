@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Final Bloom - Chapter 4: Mysteries of the Depth</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Oxygen', sans-serif;
+      background-image: linear-gradient(rgba(0, 50, 80, 0.5), rgba(0, 30, 60, 0.95)),
+        url('https://i.pinimg.com/1200x/ef/2b/92/ef2b92cf8256352b24bd3009657ee6bc.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .character {
+      position: absolute;
+      bottom: 0;
+      height: 75%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+    }
+
+    .girl-character {
+      left: 10%;
+      z-index: 10;
+    }
+
+    .boy-character {
+      right: 10%;
+      z-index: 10;
+    }
+
+    .dialogue-box {
+      position: absolute;
+      background: rgba(200, 230, 255, 0.9);
+      border-radius: 40px;
+      padding: 25px 35px;
+      box-shadow: 0 8px 30px rgba(0, 150, 255, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.5);
+      max-width: 450px;
+      text-align: left;
+      font-size: 1.15em;
+      color: #0c4a6e;
+      opacity: 0;
+      transition: opacity 1.2s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1.1);
+      transform: translateY(20px) scale(0.9);
+      z-index: 20;
+      border: 3px solid #60a5fa;
+    }
+
+    .dialogue-box.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .dialogue-box::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 15px solid rgba(200, 230, 255, 0.9);
+      bottom: -15px;
+      z-index: 1;
+    }
+
+    .girl-dialogue {
+      top: 15%;
+      left: 15%;
+    }
+
+    .boy-dialogue {
+      top: 15%;
+      right: 15%;
+    }
+
+    #nextButton,
+    #skipButton {
+      position: absolute;
+      padding: 12px 30px;
+      color: white;
+      font-size: 1.2em;
+      font-weight: bold;
+      border: 3px solid #38bdf8;
+      border-radius: 9999px;
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.7);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      z-index: 30;
+      font-family: 'Oxygen', sans-serif;
+    }
+
+    #nextButton {
+      bottom: 50px;
+      right: 50%;
+      transform: translateX(50%);
+      background-color: #0ea5e9;
+      display: none;
+    }
+
+    #nextButton:hover {
+      background-color: #0284c7;
+      transform: translateX(50%) scale(1.08);
+      box-shadow: 0 0 30px rgba(14, 165, 233, 1);
+    }
+
+    #skipButton {
+      bottom: 50px;
+      left: 50px;
+      background-color: #0891b2;
+    }
+
+    #skipButton:hover {
+      background-color: #0e7490;
+      transform: scale(1.08);
+    }
+
+    .speaker-name {
+      font-weight: bold;
+      color: #0f766e;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 1.3em;
+    }
+  </style>
+</head>
+<body>
+  <img src="Girl_O.png" class="character girl-character" />
+  <img src="Boy_O.png" class="character boy-character" />
+
+  <div id="anyaDialogue" class="dialogue-box girl-dialogue"></div>
+  <div id="kaelDialogue" class="dialogue-box boy-dialogue"></div>
+
+  <button id="nextButton">Dive Into The Deep</button>
+  <button id="skipButton">Skip →</button>
+
+  <script>
+    const dialogues = [
+            // Anya (Girl) - Introduction to Chapter
+            { speaker: "Anya", element: "anyaDialogue", text: "We now seek the wisdom of the deep in 'Mysteries of the Depth' Chapter Four. The Tidal Oracle will test your resolve to clean the world." },
+            
+            // Kael (Boy) - Level 1: Sea Sweeper
+            { speaker: "Kael", element: "kaelDialogue", text: "The oracle is in danger. Our first task is 'Sea Sweeper' (Level 1). You must protect yourself from explosive mines. " },
+            
+            // Anya (Girl) - Level 2: Ocean Floor Memory
+            { speaker: "Anya", element: "anyaDialogue", text: "The oracle's knowledge is scattered like shipwrecked fragments. Match the ancient relics to piece together the truth. 'Ocean Floor Memory' (Level 2) is a flip card game where you match pairs." },
+            
+            // Kael (Boy) - Level 3: Bubble Pop
+            { speaker: "Kael", element: "kaelDialogue", text: "Vicious air bubbles are rising too quickly, suffocating the reef! You must swiftly pop the bubbles rising from the bottom up. 'Bubble Pop' (Level 3)." },
+            
+            // Anya (Girl) - Level 4: Deep Dive Decoder
+            { speaker: "Anya", element: "anyaDialogue", text: "A hidden message is locked in a coral matrix. This is a jumbled puzzle, you must arrange the pieces to decode the ancient prophecy. (Level 4) is 'Deep Dive Decoder'." },
+            
+            // Kael (Boy) - Level 5: Match of 3
+            { speaker: "Kael", element: "kaelDialogue", text: "The final test is to find the hidden gems that power the Oracle's temple. 'Match of 3' (Level 5). Search the dense coral reef to find and match." },
+            
+            // Anya (Girl) - Final Prompt
+            { speaker: "Anya", element: "anyaDialogue", text: "Let the currents guide your mind. You have earned the Petal of Purity! Press 'Start' to plunge beneath the waves and confront the final chapter.", isFinal: true }
+        ];
+
+    let currentDialogueIndex = -1;
+    const dialogueBoxes = {
+      anyaDialogue: document.getElementById("anyaDialogue"),
+      kaelDialogue: document.getElementById("kaelDialogue"),
+    };
+    const nextButton = document.getElementById("nextButton");
+    const skipButton = document.getElementById("skipButton");
+    let isTyping = false;
+
+    function typeText(element, text, callback) {
+      let i = 0;
+      element.innerHTML = `<span class="speaker-name">${dialogues[currentDialogueIndex].speaker}</span><span class="dialogue-text-content"></span>`;
+      const content = element.querySelector(".dialogue-text-content");
+      isTyping = true;
+      const interval = setInterval(() => {
+        if (i < text.length) content.innerHTML += text.charAt(i++);
+        else {
+          clearInterval(interval);
+          isTyping = false;
+          if (callback) callback();
+        }
+      }, 35);
+    }
+
+    function advanceDialogue() {
+      if (isTyping) {
+        const d = dialogues[currentDialogueIndex];
+        const c = dialogueBoxes[d.element].querySelector(".dialogue-text-content");
+        if (c) c.innerHTML = d.text;
+        isTyping = false;
+        nextButton.textContent = d.isFinal ? "Plunge Into The Depth!" : "Follow The Current →";
+        return;
+      }
+
+      if (currentDialogueIndex === dialogues.length - 1) {
+        nextButton.textContent = "Diving...";
+        nextButton.disabled = true;
+        window.location.href = "chapter4/level1.html";
+        return;
+      }
+
+      const prev = dialogues[currentDialogueIndex];
+      currentDialogueIndex++;
+      const d = dialogues[currentDialogueIndex];
+      const currentBox = dialogueBoxes[d.element];
+      const other = d.element === "anyaDialogue" ? dialogueBoxes.kaelDialogue : dialogueBoxes.anyaDialogue;
+      if (prev) other.classList.remove("show");
+      setTimeout(() => {
+        currentBox.classList.add("show");
+        typeText(currentBox, d.text, () => (nextButton.textContent = d.isFinal ? "Plunge Into The Depth!" : "Follow The Current →"));
+      }, 800);
+    }
+
+    skipButton.addEventListener("click", () => {
+      Object.values(dialogueBoxes).forEach((b) => b.classList.remove("show"));
+      const last = dialogues[dialogues.length - 1];
+      const box = dialogueBoxes[last.element];
+      box.classList.add("show");
+      box.innerHTML = `<span class='speaker-name'>${last.speaker}</span><span class='dialogue-text-content'>${last.text}</span>`;
+      nextButton.textContent = "Plunge Into The Depth!";
+      nextButton.style.display = "block";
+      currentDialogueIndex = dialogues.length - 1;
+    });
+
+    nextButton.addEventListener("click", advanceDialogue);
+    window.onload = () => {
+      nextButton.style.display = "block";
+      advanceDialogue();
+    };
+  </script>
+</body>
+</html>

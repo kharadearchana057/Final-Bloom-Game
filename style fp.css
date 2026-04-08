@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: url("page.png") no-repeat center center/cover;
+    overflow: hidden;
+    padding-left: 60px;
+}
+
+/* Particle animation container */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(50vh) scale(1);
+    }
+    100% {
+        transform: translateY(-10vh) scale(0);
+        opacity: 0;
+    }
+}
+
+.login-container {
+
+   
+
+    background: rgba(0, 0, 0, 0.6);
+    padding: 60px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+    color: white;
+    text-align: center;
+    width: 300px;
+    position: relative;
+    z-index: 2;
+    animation: glowPulse 3s infinite alternate;
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+    100% { box-shadow: 0 0 35px rgba(0, 255, 255, 0.8); }
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #4cafef;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-container button:hover {
+    background: #3697d0;
+}
+
+.login-container a {
+    color: #fff;
+    font-size: 12px;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+/* Toggle link styles */
+.login-container a {
+    color: #4cafef;
+    font-size: 13px;
+    margin-top: 15px;
+    display: inline-block;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.login-container a:hover {
+    color: #00ffff;
+}

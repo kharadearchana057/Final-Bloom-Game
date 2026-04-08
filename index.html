@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FINAL BLOOM</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <!-- Cinematic Intro -->
+    <div id="cinematicIntro" class="cinematic-intro">
+        <div class="intro-particles"></div>
+        <div class="intro-content">
+            <div class="intro-logo">
+                <i class="fas fa-gamepad intro-icon"></i>
+                <div class="logo-glow"></div>
+            </div>
+            <div class="intro-title">
+                <h1>THE FINAL BLOOM</h1>
+                <p>Journey Through Five Legendary Worlds</p>
+            </div>
+            <div class="intro-loading">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <p>Loading magical experiences...</p>
+            </div>
+        </div>
+        <button class="skip-btn" onclick="skipIntro()">Skip Intro</button>
+    </div>
+
+    <!-- Main Game Interface -->
+    <div id="gameInterface" class="game-interface d-none">
+        <!-- Custom Cursor -->
+        <div id="customCursor" class="custom-cursor">
+            <div class="cursor-dot"></div>
+        </div>
+        
+        <!-- Particle System -->
+        <div id="particleSystem" class="particle-system"></div>
+        
+        <!-- HUD Overlay -->
+        <div class="hud-overlay">
+            <div class="container-fluid">
+                <div class="row align-items-center py-3">
+                    <div class="col-md-4">
+                        <h2 class="game-title mb-0">THE FINAL BLOOM</h2>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="hud-stats">
+                            <span class="stat-item">
+                                <i class="fas fa-crosshairs text-primary"></i>
+                                Chapter <span id="currentChapter">1</span>/<span id="totalChapters">5</span>
+                            </span>
+                            <span class="stat-item">
+                                <i class="fas fa-bolt text-warning"></i>
+                                <span id="unlockedLevels">2</span>/<span id="totalLevels">25</span> Levels
+                            </span>
+                            <span class="stat-item">
+                                <i class="fas fa-trophy text-success"></i>
+                                <span id="achievementCount">0</span> Achievements
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="progress-container">
+                            <div class="progress hud-progress">
+                                <div id="overallProgress" class="progress-bar bg-gradient" style="width: 8%"></div>
+                            </div>
+                            <span id="progressText" class="progress-text">8%</span>
+                        </div>
+                        <button class="btn btn-outline-light btn-sm ms-3" onclick="openSettings()">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container-fluid h-100">
+                <div class="row h-100">
+                    <!-- Chapters Panel -->
+                    <div class="col-md-4 chapters-panel">
+                        <div class="panel-content">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Chapters</h3>
+                                <p class="panel-subtitle">Choose your destiny</p>
+                            </div>
+                            <div id="chaptersContainer" class="chapters-container">
+                                <!-- Chapters will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Levels Panel -->
+                    <div class="col-md-8 levels-panel">
+                        <div class="panel-content">
+                            <div class="panel-header">
+                                <h3 id="chapterTitle" class="chapter-title">Whispers of the Woods</h3>
+                                <p class="chapter-subtitle">Choose your challenge and begin the adventure</p>
+                            </div>
+                            <div id="levelsContainer" class="levels-container">
+                                <!-- Levels will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chapter Modal -->
+    <div id="chapterModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content chapter-modal-content">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="chapter-modal-icon mb-4">
+                        <span id="modalChapterIcon" class="modal-icon">🌲</span>
+                        <div class="icon-glow"></div>
+                    </div>
+                    <h2 id="modalChapterTitle" class="modal-chapter-title mb-4">Whispers of the Woods</h2>
+                    <div class="star-rating mb-4">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p id="modalChapterDescription" class="chapter-description mb-4">
+                        Enter the mystical forest where ancient secrets whisper through emerald leaves.
+                    </p>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <div class="feature-box">
+                                <i class="fas fa-sparkles text-warning mb-2"></i>
+                                <h6 class="text-white">Unique Gameplay</h6>
+                                <small class="text-white">Each level offers a distinct gaming experience</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-box">
+                                <i class="fas fa-star text-primary mb-2"></i>
+                                <h6 class="text-white">Progressive Difficulty</h6>
+                                <small class="text-white">Challenges increase as you advance</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="beginJourneyBtn" class="btn btn-primary btn-lg px-5" data-bs-dismiss="modal" >
+                        Begin Journey
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content settings-modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-white">Settings</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Audio Settings -->
+                    <div class="settings-section">
+                        <h6 class="settings-title">
+                            <i class="fas fa-volume-up text-primary me-2"></i>
+                            Audio
+                        </h6>
+                        <div class="setting-item">
+                            <span>Sound Effects</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="soundToggle" checked>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <span>Background Music</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="musicToggle" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphics Settings -->
+                    <div class="settings-section">
+                        <h6 class="settings-title">
+                            <i class="fas fa-desktop text-success me-2"></i>
+                            Graphics
+                        </h6>
+                        <div class="setting-item">
+                            <span>Particle Quality</span>
+                            <select class="form-select form-select-sm" id="particleQuality">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high" selected>High</option>
+                                <option value="ultra">Ultra</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <span>Animation Speed</span>
+                            <select class="form-select form-select-sm" id="animationSpeed">
+                                <option value="slow">Slow</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="fast">Fast</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Accessibility -->
+                    <div class="settings-section">
+                        <h6 class="settings-title">
+                            <i class="fas fa-palette text-info me-2"></i>
+                            Accessibility
+                        </h6>
+                        <button class="btn btn-outline-secondary btn-sm w-100 mb-2">High Contrast Mode</button>
+                        <button class="btn btn-outline-secondary btn-sm w-100">Reduce Motion</button>
+                    </div>
+
+                    <!-- Performance -->
+                    <div class="settings-section">
+                        <h6 class="settings-title">
+                            <i class="fas fa-bolt text-warning me-2"></i>
+                            Performance
+                        </h6>
+                        <button class="btn btn-danger btn-sm w-100" onclick="clearCache()">Clear Cache</button>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 text-center">
+                    <small class="text-muted">Version 1.0.0 • Made with ❤️ for adventurers</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement Notifications Container -->
+    <div id="achievementNotifications" class="achievement-notifications"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="gameData.js"></script>
+    <script src="achievements.js"></script>
+    <script src="particles.js"></script>
+    <script src="cursor.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+    // Ensure Chapter 1, Level 1 is unlocked for new players if no progress is saved.
+    const firstLevel = document.querySelector('[data-chapter="1"][data-level="1"]');
+    if (firstLevel) {
+        // You only need to remove the 'locked' class here.
+        firstLevel.classList.remove('locked');
+        firstLevel.disabled = false;
+    }
+    </script>
+</body>
+</html>

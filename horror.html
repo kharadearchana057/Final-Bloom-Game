@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Final Bloom - Chapter 3: The Dark Within</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifier&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Nosifier', cursive; 
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.95)), 
+                              url('https://i.pinimg.com/736x/d1/5d/c4/d15dc4b09289e7c32b75fcbade7f988f.jpg'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 0;
+            height: 75%; 
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(139, 0, 0, 0.7)); 
+        }
+        .girl-character { left: 10%; z-index: 10; }
+        .boy-character { right: 10%; z-index: 10; }
+
+        .dialogue-box {
+            position: absolute;
+            background: rgba(30, 0, 0, 0.9);
+            border-radius: 10px; 
+            padding: 25px 35px;
+            box-shadow: 0 8px 40px rgba(255, 0, 0, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            max-width: 450px;
+            text-align: left;
+            font-size: 1.2em;
+            color: #fca5a5;
+            opacity: 0; 
+            transition: opacity 1.2s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.1); 
+            transform: translateY(30px) scale(0.9) rotate(2deg);
+            z-index: 20;
+            border: 3px solid #dc2626;
+        }
+        .dialogue-box.show { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+
+        .dialogue-box::after {
+            content: '';
+            position: absolute;
+            width: 0; height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid rgba(30, 0, 0, 0.9);
+            bottom: -15px;
+        }
+
+        .girl-dialogue { top: 15%; left: 15%; }
+        .boy-dialogue { top: 15%; right: 15%; }
+
+        #nextButton, #skipButton {
+            position: absolute;
+            padding: 12px 30px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            font-family: 'Creepster', cursive;
+            border: 3px solid #b91c1c;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+            cursor: pointer;
+            z-index: 30;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+
+        #nextButton {
+            bottom: 50px;
+            right: 50%;
+            transform: translateX(50%);
+            background-color: #ef4444;
+            display: none;
+        }
+        #nextButton:hover {
+            transform: translateX(50%) scale(1.08);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 1);
+        }
+
+        #skipButton {
+            bottom: 50px;
+            left: 50px;
+            background-color: #991b1b;
+        }
+        #skipButton:hover { background-color: #7f1d1d; transform: scale(1.08); }
+
+        .dialogue-text-content { font-family: 'Nosifier', cursive; }
+        .speaker-name {
+            font-family: 'Creepster', cursive;
+            font-size: 1.5em;
+            color: #f87171;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="Girl_H.png" class="character girl-character">
+    <img src="Boy_H.png" class="character boy-character">
+
+    <div id="anyaDialogue" class="dialogue-box girl-dialogue"></div>
+    <div id="kaelDialogue" class="dialogue-box boy-dialogue"></div>
+
+    <button id="nextButton">Enter The Darkness</button>
+    <button id="skipButton">Skip →</button>
+
+    <script>
+         // Full Dialogue Array for Chapter 3
+        const dialogues = [
+            // Anya (Girl) - Introduction to Chapter
+            { speaker: "Anya", element: "anyaDialogue", text: "Welcome to Chapter Three: 'The Dark Within'. We are deep within the haunted realms now. The Phantom Lord only grants passage to the truly fearless." },
+            
+            // Kael (Boy) - Level 1: Haunted Whack‑a‑Mole
+            { speaker: "Kael", element: "kaelDialogue", text:  "Your first task is to strike back at the darkness before it overtakes you. 'Haunted Whack‑a‑Mole' (Level 1). Kill the Creepy skulls and zombies." },
+            
+            // Anya (Girl) - Level 2: Horror Maze Escape
+            { speaker: "Anya", element: "anyaDialogue", text: "The Phantom Lord has sealed the path! The only way out is through the maze of shadows. 'Horror Maze Escape' (Level 2). Escape the maze before time runs out." },
+            
+            // Kael (Boy) - Level 3: The Haunted Memory Match
+            { speaker: "Kael", element: "kaelDialogue", text: "Fear warps the mind, making everything a trick. Prove your stability by remembering the true face of the shadows. Level 3 is 'The Haunted Memory Match'. A standard flip memory card game." },
+            
+            // Anya (Girl) - Level 4: Night City Zombie Shooter
+            { speaker: "Anya", element: "anyaDialogue", text: "A legion of the lost attacks! You must stand your ground and defend the light within you. 'Night City Zombie Shooter' (Level 4), kill the zombies before they kill you." },
+            
+            // Kael (Boy) - Level 5: The Quick Draw Seance
+            { speaker: "Kael", element: "kaelDialogue", text: "To truly master fear, you must mirror the spirit's erratic movements. The final challenge is a test of rapid response. 'Quick Draw Seance' (Level 5) Watch the pattern, and recreate it quickly." },
+            
+            // Anya (Girl) - Final Prompt
+            { speaker: "Anya", element: "anyaDialogue", text: "Face your fear and earn the light. You have claimed the Petal of Courage! When you are ready to descend into the dark realms, press 'Start'.", isFinal: true }
+        ];
+
+
+        let currentDialogueIndex = -1;
+        const dialogueBoxes = {
+            anyaDialogue: document.getElementById('anyaDialogue'),
+            kaelDialogue: document.getElementById('kaelDialogue')
+        };
+        const nextButton = document.getElementById('nextButton');
+        const skipButton = document.getElementById('skipButton');
+        let isTyping = false;
+
+        function typeText(element, text, callback) {
+            let i = 0;
+            element.innerHTML = `<span class="speaker-name">${dialogues[currentDialogueIndex].speaker}</span><span class="dialogue-text-content"></span>`;
+            const content = element.querySelector('.dialogue-text-content');
+            isTyping = true;
+            const interval = setInterval(() => {
+                if (i < text.length) content.innerHTML += text.charAt(i++);
+                else { clearInterval(interval); isTyping = false; if (callback) callback(); }
+            }, 35);
+        }
+
+        function advanceDialogue() {
+            if (isTyping) {
+                const d = dialogues[currentDialogueIndex];
+                const c = dialogueBoxes[d.element].querySelector('.dialogue-text-content');
+                if (c) c.innerHTML = d.text;
+                isTyping = false;
+                nextButton.textContent = d.isFinal ? "Brave The Shadow!" : "Continue Descent →";
+                return;
+            }
+
+            if (currentDialogueIndex === dialogues.length - 1) {
+                nextButton.textContent = "Banishment Commencing...";
+                nextButton.disabled = true;
+                window.location.href = "chapter3/level1.html";
+                return;
+            }
+
+            const prev = dialogues[currentDialogueIndex];
+            currentDialogueIndex++;
+            const d = dialogues[currentDialogueIndex];
+            const currentBox = dialogueBoxes[d.element];
+            const other = d.element === 'anyaDialogue' ? dialogueBoxes.kaelDialogue : dialogueBoxes.anyaDialogue;
+            if (prev) other.classList.remove('show');
+            setTimeout(() => {
+                currentBox.classList.add('show');
+                typeText(currentBox, d.text, () => nextButton.textContent = d.isFinal ? "Brave The Shadow!" : "Continue Descent →");
+            }, 800);
+        }
+
+        skipButton.addEventListener('click', () => {
+            Object.values(dialogueBoxes).forEach(b => b.classList.remove('show'));
+            const last = dialogues[dialogues.length - 1];
+            const box = dialogueBoxes[last.element];
+            box.classList.add('show');
+            box.innerHTML = `<span class='speaker-name'>${last.speaker}</span><span class='dialogue-text-content'>${last.text}</span>`;
+            nextButton.textContent = "Brave The Shadow!";
+            nextButton.style.display = 'block';
+            currentDialogueIndex = dialogues.length - 1;
+        });
+
+        nextButton.addEventListener('click', advanceDialogue);
+        window.onload = () => { nextButton.style.display = 'block'; advanceDialogue(); };
+    </script>
+</body>
+</html>

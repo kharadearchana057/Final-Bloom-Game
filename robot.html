@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Final Bloom - Chapter 5: Rise of Mechana (Orange)</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Michroma&family=Electrolize&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Electrolize", sans-serif;
+      background-image: linear-gradient(
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.95)
+        ),
+        url("https://i.pinimg.com/736x/4b/e3/2c/4be32c003771c0b7fe3bdc9178e85e00.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .character {
+      position: absolute;
+      bottom: 0;
+      height: 75%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(255, 100, 0, 0.8));
+    }
+
+    .girl-character {
+      left: 10%;
+      z-index: 10;
+    }
+
+    .boy-character {
+      right: 10%;
+      z-index: 10;
+    }
+
+    .dialogue-box {
+      position: absolute;
+      background: rgba(80, 20, 0, 0.85);
+      border-radius: 5px;
+      padding: 25px 35px;
+      box-shadow: 0 0 30px rgba(255, 100, 0, 0.6),
+        inset 0 0 15px rgba(255, 160, 0, 0.3);
+      max-width: 450px;
+      text-align: left;
+      font-size: 1.15em;
+      color: #ffefd5;
+      opacity: 0;
+      transition: opacity 1s ease-out,
+        transform 0.5s cubic-bezier(0.1, 0.9, 0.2, 1.2);
+      transform: translateY(10px) scale(0.95);
+      z-index: 20;
+      border: 2px solid #ff4500;
+    }
+
+    .dialogue-box.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .dialogue-box::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff8c00;
+      border: 2px solid #ff4500;
+      transform: rotate(45deg);
+      bottom: -5px;
+      z-index: 1;
+    }
+
+    .girl-dialogue {
+      top: 15%;
+      left: 15%;
+    }
+    .girl-dialogue::after {
+      left: 30%;
+    }
+
+    .boy-dialogue {
+      top: 15%;
+      right: 15%;
+    }
+    .boy-dialogue::after {
+      right: 30%;
+    }
+
+    #nextButton,
+    #skipButton {
+      position: absolute;
+      padding: 12px 30px;
+      color: #fff;
+      font-size: 1.3em;
+      font-weight: bold;
+      font-family: "Michroma", sans-serif;
+      border: 3px solid #ff4500;
+      border-radius: 3px;
+      box-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      z-index: 30;
+    }
+
+    #nextButton {
+      bottom: 50px;
+      right: 50%;
+      transform: translateX(50%);
+      background-color: #ff8c00;
+      display: none;
+    }
+    #nextButton:hover {
+      background-color: #e06d00;
+      transform: translateX(50%) scale(1.08);
+      box-shadow: 0 0 30px rgba(255, 140, 0, 1);
+    }
+
+    #skipButton {
+      bottom: 50px;
+      left: 50px;
+      background-color: #e06d00;
+    }
+    #skipButton:hover {
+      background-color: #c25a00;
+      transform: scale(1.08);
+    }
+
+    .speaker-name {
+      font-weight: bold;
+      color: #ffa07a;
+      margin-bottom: 5px;
+      display: block;
+      font-size: 1.3em;
+      text-shadow: 0 0 5px #ff6347;
+      font-family: "Michroma", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <img src="Girl_M.png" alt="Anya - The Guardian" class="character girl-character" />
+  <img src="Boy_M.png" alt="Kael - The Apprentice" class="character boy-character" />
+
+  <div id="anyaDialogue" class="dialogue-box girl-dialogue"></div>
+  <div id="kaelDialogue" class="dialogue-box boy-dialogue"></div>
+
+  <button id="nextButton">Initiate Final Sequence</button>
+  <button id="skipButton">Skip →</button>
+
+  <script>
+    // Full Dialogue Array for Chapter 5
+        const dialogues = [
+            // Anya (Girl) - Introduction to Chapter
+            { speaker: "Anya", element: "anyaDialogue", text: "Welcome to the last Chapter: 'Rise of Mechana'. The Central AI has imprisoned the final petal and only perfect logic can defeat it." },
+            
+            // Kael (Boy) - Level 1: Circuit Connect
+            { speaker: "Kael", element: "kaelDialogue", text: "The first step is to hack the outer defense grid by completing its power flow. 'Circuit Connect' (Level 1), You must swiftly match the wires to complete the circuit." },
+            
+            // Anya (Girl) - Level 2: Reboot Puzzle
+            { speaker: "Anya", element: "anyaDialogue", text: "You've accessed the mainframe, but the core consciousness is fragmented. Restore the machine's mind by solving the complex puzzle. (Level 2), the machine's consciousness must be restored." },
+            
+            // Kael (Boy) - Level 3: Claw Machine Game
+            { speaker: "Kael", element: "kaelDialogue", text: "The AI is using powerful energy cells to shield the final petal. Control the claw to grab energy balls 'Claw Machine Game' (Level 3) to weaken the shield." },
+            
+            // Anya (Girl) - Level 4: Escape Factory
+            { speaker: "Anya", element: "anyaDialogue", text: "The factory is now on high alert! You must quickly navigate a deactivated robot to escape and reach the core. The robot should escape the factory without being caught by AI 'Escape Factory' (Level 4)." },
+            
+            // Kael (Boy) - Level 5: Button Sequence Hacker
+            { speaker: "Kael", element: "kaelDialogue", text: "The final lock is a memory sequence that changes too fast for humans. You must repeat the pulsating button sequence perfectly to shut down the AI and claim the Petal of Logic. 'Button Sequence Hacker' (Level 5)." },
+            
+            // Anya (Girl) - Final Prompt (Leading to Final Bloom)
+           // { speaker: "Anya", element: "anyaDialogue", text: "All five chapters are now attuned. Congratulations for completing all five chapters", isFinal: true }
+        ];
+
+
+    let currentDialogueIndex = -1;
+    const dialogueBoxes = {
+      anyaDialogue: document.getElementById("anyaDialogue"),
+      kaelDialogue: document.getElementById("kaelDialogue"),
+    };
+    const nextButton = document.getElementById("nextButton");
+    const skipButton = document.getElementById("skipButton");
+    let isTyping = false;
+
+    function typeText(element, text, callback) {
+      let i = 0;
+      element.innerHTML =
+        '<span class="speaker-name">' +
+        dialogues[currentDialogueIndex].speaker +
+        "</span><span class='dialogue-text-content'></span>";
+      const contentElement = element.querySelector(".dialogue-text-content");
+      isTyping = true;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          contentElement.innerHTML += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+          isTyping = false;
+          if (callback) callback();
+        }
+      }, 30);
+    }
+
+    function advanceDialogue() {
+      if (isTyping) {
+        const currentDialogue = dialogues[currentDialogueIndex];
+        if (currentDialogue) {
+          const contentElement = dialogueBoxes[
+            currentDialogue.element
+          ].querySelector(".dialogue-text-content");
+          if (contentElement)
+            contentElement.innerHTML = currentDialogue.text;
+          isTyping = false;
+          nextButton.textContent = currentDialogue.isFinal
+            ? "Final Level Access!"
+            : "Continue Sequence →";
+        }
+        return;
+      }
+
+      if (currentDialogueIndex === dialogues.length - 1) {
+        nextButton.textContent = "Activating Tree of Souls...";
+        nextButton.disabled = true;
+        window.location.href = "chapter5/level1.html";
+        return;
+      }
+
+      const previousDialogue = dialogues[currentDialogueIndex];
+      currentDialogueIndex++;
+      const currentDialogue = dialogues[currentDialogueIndex];
+      const currentBox = dialogueBoxes[currentDialogue.element];
+      const otherBox =
+        currentDialogue.element === "anyaDialogue"
+          ? dialogueBoxes["kaelDialogue"]
+          : dialogueBoxes["anyaDialogue"];
+
+      if (previousDialogue) {
+        otherBox.classList.remove("show");
+      }
+
+      setTimeout(() => {
+        currentBox.classList.add("show");
+        typeText(currentBox, currentDialogue.text, () => {
+          nextButton.textContent = currentDialogue.isFinal
+            ? "Final Level Access!"
+            : "Continue Sequence →";
+        });
+      }, 800);
+    }
+
+    // --- SKIP BUTTON LOGIC ---
+    skipButton.addEventListener("click", () => {
+      Object.values(dialogueBoxes).forEach((b) => b.classList.remove("show"));
+      const last = dialogues[dialogues.length - 1];
+      const box = dialogueBoxes[last.element];
+      box.classList.add("show");
+      box.innerHTML =
+        "<span class='speaker-name'>" +
+        last.speaker +
+        "</span><span class='dialogue-text-content'>" +
+        last.text +
+        "</span>";
+      nextButton.textContent = "Final Level Access!";
+      nextButton.style.display = "block";
+      skipButton.style.display = "none";
+      currentDialogueIndex = dialogues.length - 1;
+    });
+
+    nextButton.addEventListener("click", advanceDialogue);
+
+    window.onload = () => {
+      nextButton.style.display = "block";
+      advanceDialogue();
+    };
+  </script>
+</body>
+</html>

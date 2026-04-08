@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Final Bloom - Chapter 2: Echoes from Cosmica</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Orbitron', sans-serif;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
+        url('https://i.pinimg.com/736x/d2/c2/dc/d2c2dccf96885e0dcc80961b7eb717f1.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .character {
+      position: absolute;
+      bottom: 0;
+      height: 75%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.5));
+    }
+
+    .girl-character { left: 10%; z-index: 10; }
+    .boy-character { right: 10%; z-index: 10; }
+
+    .dialogue-box {
+      position: absolute;
+      background: rgba(10, 20, 30, 0.95);
+      border-radius: 20px;
+      padding: 25px 35px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+      max-width: 450px;
+      text-align: left;
+      font-size: 1.15em;
+      color: #e0f2fe;
+      opacity: 0;
+      transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1.1);
+      transform: translateY(40px) scale(0.8);
+      z-index: 20;
+      border: 3px solid #06b6d4;
+    }
+
+    .dialogue-box.show { opacity: 1; transform: translateY(0) scale(1); }
+
+    #nextButton, #skipButton {
+      position: absolute;
+      padding: 12px 30px;
+      color: #e0f2fe;
+      font-size: 1.2em;
+      font-weight: bold;
+      border: 2px solid #60a5fa;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      z-index: 30;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    #nextButton {
+      bottom: 50px;
+      right: 50%;
+      transform: translateX(50%);
+      background-color: #3b82f6;
+      display: none;
+    }
+
+    #nextButton:hover {
+      background-color: #2563eb;
+      transform: translateX(50%) scale(1.08);
+      box-shadow: 0 0 25px rgba(59, 130, 246, 1);
+    }
+
+    #skipButton {
+      bottom: 50px;
+      left: 50px;
+      background-color: #0ea5e9;
+    }
+
+    #skipButton:hover {
+      background-color: #0284c7;
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body>
+  <img src="Girl_S.png" class="character girl-character">
+  <img src="Boy_S.png" class="character boy-character">
+
+  <div id="anyaDialogue" class="dialogue-box girl-dialogue"></div>
+  <div id="kaelDialogue" class="dialogue-box boy-dialogue"></div>
+
+  <button id="nextButton">Initiate Cosmica Transmission</button>
+  <button id="skipButton">Skip →</button>
+
+  <script>
+   // Full Dialogue Array for Chapter 2
+        const dialogues = [
+            // Anya (Girl) - Introduction to Chapter
+            { speaker: "Anya", element: "anyaDialogue", text: "Welcome to Chapter Two: 'Echoes from Cosmica' calls us to the vast, cold realms of space. The Stellar Keeper holds the next petal, testing your focus." },
+            
+            // Kael (Boy) - Introduction to the first Level
+            { speaker: "Kael", element: "kaelDialogue", text: "The first threat is a meteor storm heading for a life-giving planet. Every single comet must be intercepted before the timer expires. Your first challenge is 'Comet Catcher' (Level 1)." },
+            
+            // Anya (Girl) - Introducing Level 2
+            { speaker: "Anya", element: "anyaDialogue", text: "To understand the universe, you must see its patterns. 'Astral Flow' (Level 2) is a Puzzle where you must align fragments of a galaxy or an ancient space creature." },
+            
+            // Kael (Boy) - Introducing Level 3
+            { speaker: "Kael", element: "kaelDialogue", text:  "Maintaining the cosmic order comes next. 'Orbit Match' (Level 3), demands that you swap and align planets into their correct orbital paths. Do not let the solar system fall into chaos." },
+            
+            // Anya (Girl) - Introducing Level 4
+            { speaker: "Anya", element: "anyaDialogue", text: "You've caught the attention of the Void Raiders! You must prove your courage and defense. 'Galaxy Defender Space Shooting' (Level 4), Destroy enemy ships and dodge incoming fire to defend the galaxy." },
+
+            
+            // Kael (Boy) - Final Challenge
+            { speaker: "Kael", element: "kaelDialogue", text:  "The final test of memory concludes this chapter. The 'Star Constellation' challenge requires you to match pairs of hidden cards—connecting the scattered stars to reveal the Petal of Focus." },
+            
+            // Anya (Girl) - Final Prompt
+            { speaker: "Anya", element: "anyaDialogue", text: "The cosmos holds immense power. Focus on the faint echoes, and when the signal is clear, press 'Start' to enter the void and move to the cosmic realms.", isFinal: true }
+        ];
+
+
+    let currentDialogueIndex = -1;
+    const dialogueBoxes = {
+      anyaDialogue: document.getElementById('anyaDialogue'),
+      kaelDialogue: document.getElementById('kaelDialogue')
+    };
+    const nextButton = document.getElementById('nextButton');
+    const skipButton = document.getElementById('skipButton');
+    let isTyping = false;
+
+    function typeText(el, text, cb) {
+      let i = 0;
+      el.textContent = '';
+      isTyping = true;
+      const interval = setInterval(() => {
+        if (i < text.length) el.textContent += text.charAt(i++);
+        else { clearInterval(interval); isTyping = false; if (cb) cb(); }
+      }, 35);
+    }
+
+    function advanceDialogue() {
+      if (isTyping) {
+        const d = dialogues[currentDialogueIndex];
+        dialogueBoxes[d.element].textContent = d.text;
+        isTyping = false;
+        nextButton.textContent = d.isFinal ? "Initiate Warp!" : "Continue Transmission →";
+        return;
+      }
+      if (currentDialogueIndex === dialogues.length - 1) {
+        nextButton.textContent = "Warp Initiated...";
+        nextButton.disabled = true;
+        window.location.href = "chapter2/level1.html";
+        return;
+      }
+      const prev = dialogues[currentDialogueIndex];
+      currentDialogueIndex++;
+      const d = dialogues[currentDialogueIndex];
+      const box = dialogueBoxes[d.element];
+      const other = d.element === 'anyaDialogue' ? dialogueBoxes.kaelDialogue : dialogueBoxes.anyaDialogue;
+      if (prev) other.classList.remove('show');
+      setTimeout(() => {
+        box.classList.add('show');
+        typeText(box, d.text, () => nextButton.textContent = d.isFinal ? "Initiate Warp!" : "Continue Transmission →");
+      }, 800);
+    }
+
+    skipButton.addEventListener('click', () => {
+      Object.values(dialogueBoxes).forEach(b => b.classList.remove('show'));
+      const last = dialogues[dialogues.length - 1];
+      const box = dialogueBoxes[last.element];
+      box.classList.add('show');
+      box.textContent = last.text;
+      nextButton.textContent = "Initiate Warp!";
+      nextButton.style.display = 'block';
+      currentDialogueIndex = dialogues.length - 1;
+    });
+
+    nextButton.addEventListener('click', advanceDialogue);
+    window.onload = () => { nextButton.style.display = 'block'; advanceDialogue(); };
+  </script>
+</body>
+</html>
